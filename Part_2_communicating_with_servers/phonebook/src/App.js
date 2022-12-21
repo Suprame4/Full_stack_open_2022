@@ -1,37 +1,36 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
 
 const App = () => {
-  //state is set to a list of objects 
-  /*const [persons, setPersons] = useState([
-    { id: 1,
-      name: 'Arto Hellas',
-      phone: '206-222-2222'  
-    }
-  ]) */
-  const [persons, setPersons] = useState([
-    { id: 1, name: 'Arto Hellas', number: '040-123456' },
-    { id: 2, name: 'Ada Lovelace', number: '39-44-5323523' },
-    { id: 3, name: 'Dan Abramov', number: '12-43-234345' },
-    { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+
+  const [persons, setPersons] = useState([])
   //state is set to a string
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [query, setQuery] = useState('')
 
+    //useEffect to retreive data from db.json 
+    useEffect(() => {
+      axios
+        .get('http://localhost:3001/db')
+        .then(response => {
+          console.log(response.data.persons)
+          setPersons(response.data.persons)
+        })
+      },[])
 
   const addPhone = (event) => {
     //prevent the default behavior 
     event.preventDefault()
     
     //create a name object  
-    const nameObject = {
-      id: persons.length + 1, 
+    const nameObject = { 
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: persons.length + 1
     } 
     console.log('test1 :', newName)
   
@@ -74,6 +73,7 @@ const App = () => {
   const filteredList = persons.filter(person => 
       person.name.toLowerCase().includes(query.toLowerCase())
       ) 
+
   
   return (
     <div>
