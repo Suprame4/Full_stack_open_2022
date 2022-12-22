@@ -9,8 +9,10 @@ An overview of the basics of web development
 Learn about the React library and how to write code on the browser. Also, learn about key features about JavaScript that are important to understand React 
 
 ### Part 2 - Programming a server with NodeJS and Express
+Learn about how a user can submit data to a react app using **HTML forms**, then, how JavaScript code in the browser can **fetch** and handle data stored in a remote backend server. 
 
 ### Part 3 - Testing Express servers, user administration 
+Learn how to implement functionality on the server side of the stack. Implement a simple **REST API** in node.js by using the **express** library, and store the application data in a **mongoDB** database. 
 
 ### Part 4 - Testing React Apps 
 
