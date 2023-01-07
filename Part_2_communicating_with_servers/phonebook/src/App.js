@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import noteService from './services/notes'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
@@ -14,11 +14,10 @@ const App = () => {
 
     //useEffect to retreive data from db.json 
     useEffect(() => {
-      axios
-        .get('http://localhost:3001/db')
-        .then(response => {
-          console.log(response.data.persons)
-          setPersons(response.data.persons)
+      noteService
+        .getAll()
+        .then(initialNotes => {
+          setPersons(initialNotes)
         })
       },[])
 
@@ -33,18 +32,43 @@ const App = () => {
       id: persons.length + 1
     } 
     console.log('test1 :', newName)
-  
+
+    //check if the name is already in the phonebook and whether or not to update 
+    //the phone number 
+    const result = persons.find(person => person.name === newName)
+
+    if(result){
+      if (window.confirm(`${result.name} is already added to the phonebook, replace the older number with a new one?`))
+        {
+          console.log(nameObject)
+          const nameObject2 = {...nameObject, id: result.id}
+          console.log(nameObject2)
+
+          noteService.
+            update(nameObject2, result.id)
+            .then(response => {
+              setPersons(persons.filter(item => item.name != nameObject2.name).concat(nameObject2))
+              setNewName('')
+              setNewNumber('')
+            })
+        }
+      }
     //the some() method to test whether at least one element in the array passes the test 
     //implemented by the provided function 
-    if(persons.some(person => nameObject.name.toLowerCase() === person.name.toLowerCase())){
+    else if(persons.some(person => nameObject.name.toLowerCase() === person.name.toLowerCase())){
       alert(`${nameObject.name} is already added to the phonebook`)
       setNewName("")
       setNewNumber("")
     } else {    
-
-      setPersons(persons.concat(nameObject));
-      setNewName("");
-      setNewNumber("")
+    
+      //update the phonebook with noteService
+      noteService
+        .create(nameObject)
+        .then(response => {
+          setPersons(persons.concat(nameObject))
+          setNewName("");
+          setNewNumber("")
+        })
     }     
        
   }
@@ -74,6 +98,25 @@ const App = () => {
       person.name.toLowerCase().includes(query.toLowerCase())
       ) 
 
+  //create a callback function for deleting phonebook entry
+  const deleteNote = id => {
+    const note = persons.find(n => n.id === id )
+    
+    //create if statements for the deletion of an entry
+    if(note){
+      
+      //create an if statement for the alert window
+      if(window.confirm(`Delete ${note.name} ?`)){
+           //delete the entry
+        noteService
+        .remove(note.id)
+        .then(
+          setPersons(persons.filter(item => item.name != note.name))
+        )  
+      }
+    }
+  }
+
   
   return (
     <div>
@@ -90,7 +133,7 @@ const App = () => {
       />         
       
       <h2>Numbers</h2>
-      <Persons persons={filteredList}/>
+      <Persons persons={filteredList} remove={deleteNote}/>
     
     
     </div>
