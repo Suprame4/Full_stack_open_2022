@@ -3,6 +3,7 @@ import noteService from './services/notes'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
+import Notification from './components/Notification.js'
 
 const App = () => {
 
@@ -11,6 +12,9 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [query, setQuery] = useState('')
+
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [infoMessage, setInfoMessage] = useState(null)
 
     //useEffect to retreive data from db.json 
     useEffect(() => {
@@ -50,7 +54,22 @@ const App = () => {
               setPersons(persons.filter(item => item.name != nameObject2.name).concat(nameObject2))
               setNewName('')
               setNewNumber('')
+              //add a message to the screen 
+              setSuccessMessage(
+                `${nameObject2.name} phone number changed`
+              )
+              setTimeout(() => {
+                setSuccessMessage(null)
+              }, 5000)
+            }).catch(error => {
+              setInfoMessage(
+                `Information of ${nameObject2.name} was already removed from the server`
+              )
+              setTimeout(() => {
+                setInfoMessage(null)
+              }, 5000)
             })
+
         }
       }
     //the some() method to test whether at least one element in the array passes the test 
@@ -68,6 +87,13 @@ const App = () => {
           setPersons(persons.concat(nameObject))
           setNewName("");
           setNewNumber("")
+          //add a message to the screen
+          setSuccessMessage(
+            `Added ${nameObject.name} ${nameObject.number}`
+          )
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }     
        
@@ -121,7 +147,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={successMessage} infoMessage={infoMessage}/>
         <Filter 
             value={query}
             onChange={filterListHandler}
