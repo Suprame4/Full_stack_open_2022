@@ -65,6 +65,24 @@
       "content": "this is another message",
       "date": "2023-01-03T05:21:11.607Z",
       "important": false
+    },
+    {
+      "id": 12,
+      "content": "test 7",
+      "date": "2023-01-05T21:52:20.829Z",
+      "important": true
+    },
+    {
+      "id": 13,
+      "content": "HTML is easy",
+      "date": "2023-01-07T23:45:10.866Z",
+      "important": true
+    },
+    {
+      "id": 14,
+      "content": "HTLM is easy",
+      "date": "2023-01-08T00:04:47.131Z",
+      "important": true
     }
   ]
 }
