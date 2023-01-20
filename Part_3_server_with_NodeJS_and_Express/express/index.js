@@ -32,6 +32,11 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
+//view the notes 
+app.get('/api/notes', (resquest, response) => {
+    response.json(notes)
+})
+
 app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     const note = notes.find(note => note.id === id)
@@ -64,6 +69,7 @@ const generateId = () => {
 app.post('/api/notes', (request, response) => {
     const body = request.body 
     
+    console.log(request.body.content)
     if(!body.content){
         return response.status(400).json({
             error: 'content missing'
@@ -80,6 +86,7 @@ app.post('/api/notes', (request, response) => {
 
     response.json(note)
 })
+
 
 const PORT = 3001
 app.listen(PORT, () => {
