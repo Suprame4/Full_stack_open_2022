@@ -1,6 +1,7 @@
-//import the express module 
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Note = require('./models/note')
 
 //update for cross origin resource sharing 
 const cors = require('cors')
@@ -42,6 +43,22 @@ app.use(cors())
 
 app.use(express.static('build'))
 
+const mongoose = require('mongoose')
+
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const url =
+  `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`
+
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+const Note = mongoose.model('Note', noteSchema)
+
 //define two routes to the application - The first one defines an event 
 //handler that is used to handle HTTP GET requests made to the app's / root
 app.get('/', (request, response) => {
@@ -49,9 +66,15 @@ app.get('/', (request, response) => {
 })
 
 //view the notes 
-app.get('/api/notes', (resquest, response) => {
+/*app.get('/api/notes', (resquest, response) => {
     response.json(notes)
-})
+})*/
+
+app.get('/api/notes', (request, response) => {
+    Note.find({}).then(notes => {
+      response.json(notes)
+    })
+  })
 
 app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
