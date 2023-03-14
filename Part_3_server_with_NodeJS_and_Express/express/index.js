@@ -83,6 +83,7 @@ app.get('/api/notes/:id', (request, response) => {
 
         response.status(404).end()
     }
+    response.json(note)
 })
 
 //deleting resources
