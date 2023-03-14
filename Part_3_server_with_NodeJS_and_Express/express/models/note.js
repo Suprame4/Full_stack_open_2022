@@ -1,3 +1,4 @@
+/*
 const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
@@ -28,3 +29,4 @@ noteSchema.set('toJSON', {
 })
 
 module.exports = mongoose.model('Note', noteSchema)
+*/

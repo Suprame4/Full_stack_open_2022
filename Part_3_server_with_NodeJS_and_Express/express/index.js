@@ -43,6 +43,7 @@ app.use(cors())
 
 app.use(express.static('build'))
 
+/*
 const mongoose = require('mongoose')
 
 // DO NOT SAVE YOUR PASSWORD TO GITHUB!!
@@ -58,7 +59,7 @@ const noteSchema = new mongoose.Schema({
 })
 
 const Note = mongoose.model('Note', noteSchema)
-
+*/
 //define two routes to the application - The first one defines an event 
 //handler that is used to handle HTTP GET requests made to the app's / root
 app.get('/', (request, response) => {
@@ -66,15 +67,11 @@ app.get('/', (request, response) => {
 })
 
 //view the notes 
-/*app.get('/api/notes', (resquest, response) => {
+app.get('/api/notes', (resquest, response) => {
     response.json(notes)
-})*/
+})
 
-app.get('/api/notes', (request, response) => {
-    Note.find({}).then(notes => {
-      response.json(notes)
-    })
-  })
+
 
 app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -136,5 +133,3 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-
-

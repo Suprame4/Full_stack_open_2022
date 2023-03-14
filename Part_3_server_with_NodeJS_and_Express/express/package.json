@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/part2-notes/build && npm run build && cp -r build /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/express/",
+    "build:ui": "rm -rf build && cd /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/part2-notes/ && npm run build && cp -r build /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/express/",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "author": "Adrian",

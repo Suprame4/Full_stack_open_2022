@@ -1,3 +1,4 @@
+/*
 const mongoose = require('mongoose')
 
 if (process.argv.length<3) {
@@ -29,3 +30,4 @@ note.save().then(result => {
   console.log('note saved!')
   mongoose.connection.close()
 })
+*/
