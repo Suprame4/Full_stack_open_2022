@@ -1,4 +1,3 @@
-/*
 const mongoose = require('mongoose')
 
 if (process.argv.length<3) {
@@ -6,10 +5,10 @@ if (process.argv.length<3) {
   process.exit(1)
 }
 
-const password = process.argv[2]
+const password = process.argv[3]
 
-const url = `mgodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`
-
+const url = `mongodb+srv://fullstack:${password}@cluster0.mih067p.mongodb.net/noteApp?retryWrites=true&w=majority`
+            
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
@@ -30,4 +29,3 @@ note.save().then(result => {
   console.log('note saved!')
   mongoose.connection.close()
 })
-*/
