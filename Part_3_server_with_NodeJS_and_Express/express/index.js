@@ -18,6 +18,23 @@ let notes = [
     next()
   }
 
+//create errorHandler 
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message)
+
+  if (error.name === 'CastError'){
+    return response.status(400).send({ error: 'malformatted id'})
+  } else if (error.name === 'ValidationError'){
+    return response.status(400).json({ error: error.message})
+  }
+
+  next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({error: 'unknown endpoint'})
+}
+
 app.use(express.json())
 app.use(requestLogger)
 app.use(cors())
@@ -53,18 +70,25 @@ app.get('/api/notes', (resquest, response) => {
 app.get('/api/notes/:id', (request, response) => {
    Note.findById(request.params.id)
    .then(note => {
-    response.json(note)
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
    })
+   .catch(error => next(error))
 })
 
 //deleting resources
 app.delete('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = notes.filter(note => note.id !== id)
+    Note.findByIdAndUpdate(request.params.id)
+      .then(result => {
+        response.status(204).end()
+      })
+      .catch( error => next(error))
 //if deleting the note was successful, meaning that the note exists and is removed,
 //respond to the request with the status code 204 no content and 
 //return no data with the response 
-    response.status(204).end()
 })
 
 const generateId = () => {
@@ -93,11 +117,21 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({error: 'unknown endpoint'})
-}
+app.put('/api/notes/:id', (request, response, next) => {
+  const {content, important} = request.body
+
+  Note.findByIdAndUpdate(
+    request.params.id, 
+    {content, important}, 
+    {new: true, runValidators: true, context: 'query'})
+    .then(updatedNote => {
+      response.json(updatedNote)
+    })
+    .catch(error => next(error))
+})
 
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
