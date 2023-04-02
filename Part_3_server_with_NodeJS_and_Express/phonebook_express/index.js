@@ -24,7 +24,18 @@ let persons = [
     }
 ]
 
+//create middleware that will print info about every request that is sent to 
+// server
+const requestLogger = (req, res, next) => {
+    console.log("Method: ", req.method)
+    console.log("Path: ", req.path)
+    console.log("Body: ", req.body)
+    console.log("------")
+    next()
+}
+
 app.use(express.json())
+app.use(requestLogger)
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
@@ -101,6 +112,12 @@ app.post('/api/persons', (request, response) => {
     response.json(person)
 })
 
+//create middleware to catch unknown request routes
+const unknownEndpoints = (req, res) => {
+    res.status(404).send({error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoints)
 
 const PORT = 3001
 app.listen(PORT, () => {
