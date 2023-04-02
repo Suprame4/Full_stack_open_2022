@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 let persons = [
@@ -35,7 +36,8 @@ const requestLogger = (req, res, next) => {
 }
 
 app.use(express.json())
-app.use(requestLogger)
+//app.use(requestLogger)
+app.use(morgan('tiny'))
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
@@ -82,7 +84,7 @@ app.delete('/api/persons/:id', (request, response) => {
 //backend step5 - POST
 app.post('/api/persons', (request, response) => {
     const body = request.body 
-    console.log(request.body.name)
+    //console.log(request.body.name)
     
     if(!body.name){
         console.log(body.name)
@@ -100,7 +102,7 @@ app.post('/api/persons', (request, response) => {
             error: 'name must be unqiue'
         })
     }
-    
+
     const person = {
         name: body.name,
         number: body.number,
@@ -110,6 +112,7 @@ app.post('/api/persons', (request, response) => {
     persons = persons.concat(person)
 
     response.json(person)
+    console.log(JSON.stringify(request.body))
 })
 
 //create middleware to catch unknown request routes
