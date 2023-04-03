@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 
 let persons = [
     { 
@@ -36,8 +37,10 @@ const requestLogger = (req, res, next) => {
 }
 
 app.use(express.json())
+app.use(express.static('build'))
 //app.use(requestLogger)
 app.use(morgan('tiny'))
+app.use(cors())
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
