@@ -1,3 +1,5 @@
+require('dotenv').config()
+const Contact = require('./models/contact')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
@@ -36,18 +38,55 @@ const requestLogger = (req, res, next) => {
     next()
 }
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError'){
+        return response.status(400).send({error: 'malformatted id'})
+    } else if (error.name === 'ValidationError'){
+        return response.status(400).json({ error: error.message})
+    }
+
+    next(error)
+}
+
+//create middleware to catch unknown request routes
+const unknownEndpoints = (req, res) => {
+    res.status(404).send({error: 'unknown endpoint'})
+}
+
 app.use(express.json())
-app.use(express.static('build'))
+app.use(requestLogger)
 //app.use(requestLogger)
 app.use(morgan('tiny'))
 app.use(cors())
+app.use(express.static('build'))
+
+
+/*
+const url = `mongodb+srv://fullstack:reactr206@cluster0.mih067p.mongodb.net/phonebookApp?retryWrites=true&w=majority`
+            
+
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+
+//change the schema 
+const contactSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+})
+
+const Contact = mongoose.model('Contact', contactSchema)*/
+
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Contact.find({}).then(contact => {
+        response.json(contact)
+    })
 })
 
 //backend step2
@@ -64,24 +103,39 @@ app.get('/info', (request, response) => {
         ${date}`)
 })
 
-//backend step3
+//change to use mongoose findById method 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person){
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    Contact.findById(request.params.id).then(contact => {
+        response.json(contact)
+    })
 })
 
 //backend step4 - delete
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
+app.delete('/api/persons/:id', (request, response, next) => {
+    
+    Contact.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
+})
 
-    response.status(204).end()
+//add a put request to update any contacts 
+//put will be tested in postman 
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+
+    const contact = {
+        name: body.name,
+        number: body.number
+
+    }
+
+    Contact.findByIdAndUpdate(request.params.id, contact, { new: true})
+        .then(updatedContact => {
+            response.json(updatedContact)
+        })
+        .catch(error => next(error))
 })
 
 //backend step5 - POST
@@ -106,26 +160,25 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = {
+    const person = new Contact({
         name: body.name,
         number: body.number,
-        id: Math.floor(Math.random() * (100 - 1) + 1)
-    }
+        
+    })
 
-    persons = persons.concat(person)
-
-    response.json(person)
-    console.log(JSON.stringify(request.body))
+    person.save().then(savedContact => {
+        response.json(savedContact)
+    }).catch(error => {
+        console.log(error.response.data.error)
+    })
 })
 
-//create middleware to catch unknown request routes
-const unknownEndpoints = (req, res) => {
-    res.status(404).send({error: 'unknown endpoint'})
-}
 
 app.use(unknownEndpoints)
+app.use(errorHandler)
 
-const PORT = 3001
+//use the environment variables defined in .env
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
