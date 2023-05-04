@@ -20,16 +20,7 @@ const contactSchema = new mongoose.Schema({
     minLength: 3,
     required: true
   },
-  number: {
-    minLength: 8, 
-    validate: {
-        validatior: function(v){
-            return /\d{1}-\d{1}/.test(v)
-        },
-        message: props => `${props.value} is not a valid phone number!`
-    }, 
-        required: [true, 'User phone number required']
-  }
+
 })
 
 
