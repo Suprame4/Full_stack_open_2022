@@ -3,8 +3,8 @@
 //import the axios package
 import axios from 'axios'
  
-const baseUrl = 'http://localhost:3001/persons'
-
+const baseUrl = '/api/persons'
+//const baseUrl = 'http://localhost:3001/persons'
 //create three functions for communcating with the backend server 
 
 //use HTTP GET to get the entire phonebook of individuals 
@@ -31,9 +31,11 @@ const remove = (id) => {
     return request.then(response => response.data)
 }
 
-export default {
+const noteService = {
     getAll, 
     create, 
     update,
     remove
 }
+
+export default noteService; 

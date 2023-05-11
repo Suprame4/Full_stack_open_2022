@@ -80,7 +80,7 @@ const App = () => {
       setNewNumber("")
     } else {    
     
-      //update the phonebook with noteService
+      //add to the phonebook with noteService
       noteService
         .create(nameObject)
         .then(response => {
@@ -94,6 +94,11 @@ const App = () => {
           setTimeout(() => {
             setSuccessMessage(null)
           }, 5000)
+        }).catch( error => {
+          //log the error message
+          console.log("Validation error: ", error.response.data.error)
+          //set the error message
+          setInfoMessage(error.response.data.error)
         })
     }     
        
