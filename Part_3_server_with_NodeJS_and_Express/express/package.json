@@ -7,6 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
     "build:ui": "rm -rf build && cd /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/part2-notes/ && npm run build && cp -r build /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/express/",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
@@ -19,6 +20,8 @@
     "mongoose": "^6.9.0"
   },
   "devDependencies": {
+    "eslint": "^8.40.0",
+    "eslint-plugin-react": "^7.32.2",
     "nodemon": "^2.0.20"
   }
 }
