@@ -11,8 +11,14 @@ const url = `mongodb+srv://fullstack:reactr206@cluster0.mih067p.mongodb.net/phon
             
 
 mongoose.set('strictQuery',false)
-mongoose.connect(url)
 
+//try async/await to connect to mongo
+try {
+  await mongoose.connect(url)
+}
+  catch (error){
+    console.log("Error ", error)
+}
 //change the schema 
 const contactSchema = new mongoose.Schema({
   name: String,
