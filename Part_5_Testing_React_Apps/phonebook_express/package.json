@@ -1,0 +1,25 @@
+{
+  "name": "phonebook_backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf build && cd /Users/adriangc/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/phonebook/ && npm run build && cp -r build /Users/adriangc/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/phonebook_express/",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+  },
+  "author": "Adrian",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0"
+  }
+}
