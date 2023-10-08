@@ -20,6 +20,10 @@ Learn how to implement functionality on the server side of the stack. Implement 
 * Implement token authorization with Json Web Tokens **jsonwebtoken** and authorization header
   
 ### Part 5 - Testing React Apps
+* Utilize local storage to save a jwt
+* Intro to PropTypes
+* Intro to **React-Testing-Library**
+* Intro to e2e testing with **Cypress**
 
 ### Part 6 - State management with Redux
 
