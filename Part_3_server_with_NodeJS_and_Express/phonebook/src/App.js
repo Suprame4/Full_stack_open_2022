@@ -99,6 +99,10 @@ const App = () => {
           console.log("Validation error: ", error.response.data.error)
           //set the error message
           setInfoMessage(error.response.data.error)
+
+          setTimeout(() => {
+            setInfoMessage(null)
+          }, 5000)
         })
     }     
        

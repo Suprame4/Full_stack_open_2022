@@ -9,7 +9,8 @@
     "build:ui": "rm -rf build && cd /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/part2-notes/ && npm run build && cp -r build /Users/adriancortes/Desktop/Full_stack_open_2022/Part_3_server_with_NodeJS_and_Express/express/",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint .",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "author": "Adrian",
   "license": "MIT",
