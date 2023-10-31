@@ -4,7 +4,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux'
 
 import filterReducer, { filterChange } from './reducers/filterReducer';
-import noteReducer, { createNote, toggleImportanceOf } from './reducers/noteReducer';
+import noteReducer, { createNote, appendNote, setNotes } from './reducers/noteReducer';
+import noteService from './services/notes'
+import store from './store'
 import App from './App';
 
 // const reducer = combineReducers({
@@ -14,13 +16,16 @@ import App from './App';
 
 // create the store 
 // const store = createStore(reducer);
-const store = configureStore({
-  reducer: {
-    notes: noteReducer,
-    filter: filterReducer
-  }
-})
+// const store = configureStore({
+//   reducer: {
+//     notes: noteReducer,
+//     filter: filterReducer
+//   }
+// })
 
+noteService.getAll().then(notes =>
+  store.dispatch(setNotes(notes))
+)
 //example dispatch 
 // store.dispatch({
 //   type: 'NEW_NOTE',
@@ -40,8 +45,8 @@ const store = configureStore({
 //   }
 // })
 
-store.dispatch(filterChange('IMPORTANT'))
-store.dispatch(createNote('combineReducers forms one reducer from many simple reducers'))
+// store.dispatch(filterChange('IMPORTANT'))
+// store.dispatch(createNote('combineReducers forms one reducer from many simple reducers'))
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>

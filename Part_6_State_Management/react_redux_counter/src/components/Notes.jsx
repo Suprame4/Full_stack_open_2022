@@ -1,4 +1,4 @@
-import { toggleImportanceOf } from "./reducers/noteReducer";
+import { toggleImportanceOf } from "../reducers/noteReducer";
 import { useSelector, useDispatch } from "react-redux";
 
 const Note = ({ note, handleSubmit }) => {
