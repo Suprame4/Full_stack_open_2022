@@ -4,24 +4,14 @@ import App from './App';
 
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import noteReducer from './reducers/noteReducer';
-import filterReducer from './reducers/filterReducer';
+import noteService from './services/note';
 
-import { configureStore } from '@reduxjs/toolkit'
+import store from './store';
 
 // const reducer = combineReducers({
 //   notes: noteReducer,
 //   filter: filterReducer
 // })
-
-//const store = createStore(reducer);
-
-const store = configureStore({
-  reducer: {
-    notes: noteReducer,
-    filter: filterReducer
-  }
-})
 
 //console.log("store.getStore(): ", store.getState());
 store.subscribe(() => console.log(store.getState()))
