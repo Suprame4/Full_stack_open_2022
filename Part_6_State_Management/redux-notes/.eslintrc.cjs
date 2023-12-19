@@ -5,4 +5,5 @@ module.exports = {
       es2020: true,
       "jest/globals": true
     },
+    "plugins":  ["jest"],
   }
