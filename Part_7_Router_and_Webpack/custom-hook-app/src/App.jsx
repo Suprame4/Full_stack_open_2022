@@ -1,36 +1,50 @@
 import * as React from 'react';
 
+// Create custom hook
+const useField = ( type ) => {
+  const [value, setValue] = React.useState('')
+
+  const onChange = ( event ) => {
+    setValue(event.target.value)
+  }
+
+  return {
+    type, 
+    value,
+    onChange
+  }
+}
+
 const App = () => {
-  const [name, setName] = React.useState('')
-  const [born, setBorn] = React.useState('')
-  const [height, setHeight] = React.useState('')
+  const name = useField('text');
+  const born = useField('date');
+  const height = useField('number');
 
   return (
     <div>
       <form>
         name: 
+        {/* use the spread syntax */}
         <input
-          type='text'
-          value={name}
-          onChange={(event) => setName(event.target.value)} 
+          {...name}
         /> 
         <br/> 
         birthdate:
         <input
-          type='date'
-          value={born}
-          onChange={(event) => setBorn(event.target.value)}
+          type={born.type}
+          value={born.value}
+          onChange={born.onChange}
         />
         <br /> 
         height:
         <input
-          type='number'
-          value={height}
-          onChange={(event) => setHeight(event.target.value)}
+          type={height.type}
+          value={height.value}
+          onChange={height.onChange}
         />
       </form>
       <div>
-        {name} {born} {height} 
+        {name.value} {born.value} {height.value} 
       </div>
     </div>
   )
