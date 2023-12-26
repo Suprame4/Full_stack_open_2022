@@ -1,45 +1,38 @@
-import * as React from 'react';
+import { useState } from 'react';
 
-const useCounter = () => {
-  const [value, setValue] = React.useState(0);
-
-  const increase = () => {
-    setValue(value + 1)
-  }
-
-  const decrease = () => {
-    setValue(value - 1)
-  }
-
-  const zero = () => {
-    setValue(0)
-  }
-
-  return {
-    value,
-    increase,
-    decrease,
-    zero
-  }
-}
-
-function App() {
-  const counter = useCounter();
+const App = () => {
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+  const [height, setHeight] = useState('')
 
   return (
-    <>
-      <h1>Custom Hook App</h1>
-      <div>{counter.value}</div>
-      <button onClick={counter.increase}>
-        plus
-      </button>
-      <button onClick={counter.decrease}>
-        minus
-      </button>      
-      <button onClick={counter.zero}>
-        zero
-      </button>
-    </>
+    <div>
+      <form>
+        name: 
+        <input
+          type='text'
+          value={name}
+          onChange={(event) => setName(event.target.value)} 
+        /> 
+        <br/> 
+        birthdate:
+        <input
+          type='date'
+          value={born}
+          onChange={(event) => setBorn(event.target.value)}
+        />
+        <br /> 
+        height:
+        <input
+          type='number'
+          value={height}
+          onChange={(event) => setHeight(event.target.value)}
+        />
+      </form>
+      <div>
+        {name} {born} {height} 
+      </div>
+    </div>
   )
 }
 
