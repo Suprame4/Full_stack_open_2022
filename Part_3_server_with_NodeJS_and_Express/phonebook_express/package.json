@@ -13,7 +13,7 @@
   "author": "Adrian",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^3.1.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
