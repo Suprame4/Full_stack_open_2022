@@ -44,8 +44,8 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/persons', (request, response) => {
-    Contact.find({}).then(contact => {
+app.get('/api/persons', async (request, response) => {
+    await Contact.find({}).then(contact => {
         response.json(contact)
     })
 })
@@ -80,9 +80,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
         })
         .catch(error => next(error))
 })
-
-//add a put request to update any contacts 
-//put will be tested in postman 
+ 
 app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
 
@@ -102,7 +100,6 @@ app.put('/api/persons/:id', (request, response, next) => {
 //backend step5 - POST
 app.post('/api/persons', (request, response) => {
     const body = request.body 
-    //console.log(request.body.name)
 
     if(!body.name){
         console.log(body.name)
@@ -115,11 +112,12 @@ app.post('/api/persons', (request, response) => {
             error: 'number missing'
         })
     }
-    if (persons.find(person => person.name === body.name)){
-        return response.status(400).json({
-            error: 'name must be unqiue'
-        })
-    }
+    // Model.find() seems to be causing an error comment out for now  
+    // if ( await Contact.find(person => person.name === body.name)){
+    //     return response.status(400).json({
+    //         error: 'name must be unqiue'
+    //     })
+    // }
 
     const person = new Contact({
         name: body.name,
