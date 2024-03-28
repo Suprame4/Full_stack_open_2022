@@ -78,7 +78,7 @@ const generateId = () => {
     return maxId + 1
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
     const body = request.body 
     
     console.log(request.body.content)
@@ -92,11 +92,11 @@ app.post('/api/notes', (request, response) => {
         important: body.important || false,
     })
 
-    note.save().then(savedNote => {
-      response.json(savedNote)
-      //close connection
-      //mongoose.connection.close()
+    note.save()
+      .then(savedNote => {
+        response.json(savedNote)
     })
+    .catch(error => next(error))
 })
 
 app.put('/api/notes/:id', (request, response, next) => {
