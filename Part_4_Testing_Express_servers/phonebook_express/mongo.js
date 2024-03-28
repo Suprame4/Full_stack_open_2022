@@ -21,7 +21,11 @@ try {
 }
 //change the schema 
 const contactSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 1,
+    required: true
+  },
   number: String,
 })
 

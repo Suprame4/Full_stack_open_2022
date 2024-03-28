@@ -5,28 +5,6 @@ const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
 
-let persons = [
-    { 
-      id: 1,
-      name: "Arto Hellas", 
-      number: "040-123456"
-    },
-    { 
-      id: 2,
-      name: "Ada Lovelace", 
-      number: "39-44-5323523"
-    },
-    { 
-      id: 3,
-      name: "Dan Abramov", 
-      number: "12-43-234345"
-    },
-    { 
-      id: 4,
-      name: "Mary Poppendieck", 
-      number: "39-23-6423122"
-    }
-]
 
 //create middleware that will print info about every request that is sent to 
 // server
@@ -42,9 +20,9 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError'){
-        return response.status(400).send({error: 'malformatted id'})
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError'){
-        return response.status(400).json({ error: error.message})
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
@@ -62,13 +40,12 @@ app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('build'))
 
-
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/persons', (request, response) => {
-    Contact.find({}).then(contact => {
+app.get('/api/persons', async (request, response) => {
+    await Contact.find({}).then(contact => {
         response.json(contact)
     })
 })
@@ -96,26 +73,27 @@ app.get('/api/persons/:id', (request, response) => {
 
 //backend step4 - delete
 app.delete('/api/persons/:id', (request, response, next) => {
-    
+
     Contact.findByIdAndRemove(request.params.id)
         .then(result => {
             response.status(204).end()
         })
         .catch(error => next(error))
 })
-
-//add a put request to update any contacts 
-//put will be tested in postman 
+ 
 app.put('/api/persons/:id', (request, response, next) => {
-    const body = request.body
+    const { name, number } = request.body
 
-    const contact = {
-        name: body.name,
-        number: body.number
+    // const contact = {
+    //     name: body.name,
+    //     number: body.number
+    // }
 
-    }
-
-    Contact.findByIdAndUpdate(request.params.id, contact, { new: true})
+    Contact.findByIdAndUpdate(
+        request.params.id, 
+        { name, number }, 
+        { new: true, runValidators: true, context: 'query' }
+    )
         .then(updatedContact => {
             response.json(updatedContact)
         })
@@ -125,8 +103,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 //backend step5 - POST
 app.post('/api/persons', (request, response) => {
     const body = request.body 
-    //console.log(request.body.name)
-    
+
     if(!body.name){
         console.log(body.name)
         return response.status(400).json({
@@ -138,22 +115,23 @@ app.post('/api/persons', (request, response) => {
             error: 'number missing'
         })
     }
-    if (persons.find(person => person.name === body.name)){
-        return response.status(400).json({
-            error: 'name must be unqiue'
-        })
-    }
+    // Model.find() seems to be causing an error comment out for now  
+    // if ( await Contact.find(person => person.name === body.name)){
+    //     return response.status(400).json({
+    //         error: 'name must be unqiue'
+    //     })
+    // }
 
     const person = new Contact({
         name: body.name,
         number: body.number,
-        
+
     })
 
     person.save().then(savedContact => {
         response.json(savedContact)
     }).catch(error => {
-        console.log("ERROR message: ", error)
+            next(error);
     })
 })
 
