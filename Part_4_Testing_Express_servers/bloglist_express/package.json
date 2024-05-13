@@ -1,0 +1,21 @@
+{
+  "name": "bloglist_express",
+  "version": "1.0.0",
+  "description": "Bloglist exercises Chapter 4 part a",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "NODE_ENV=development nodemon index.js"
+  },
+  "author": "Adrian G.",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
