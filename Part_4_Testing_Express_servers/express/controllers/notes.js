@@ -30,7 +30,7 @@ const getTokenFrom = request => {
   return null 
 }
 
-notesRouter.post('/', async (request, response) => {
+notesRouter.post('/', async (request, response, next) => {
   const body = request.body
 
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
@@ -46,12 +46,13 @@ notesRouter.post('/', async (request, response) => {
     user: user.id
   })
 
-  
+
   const savedNote = await note.save()
   user.notes = user.notes.concat(savedNote._id)
   await user.save()
 
   response.json(savedNote)
+  response.status(201).end()
 })
 
 notesRouter.delete('/:id', async (request, response) => {
