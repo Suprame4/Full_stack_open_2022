@@ -5,7 +5,6 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
-const blog = require('../models/blog')
 
 // creates a superagent object
 const api = supertest(app)
@@ -94,6 +93,41 @@ describe('test the api', () => {
             .post('/api/blogs')
             .send(blog)
             .expect(400)
+    })
+
+    test('verify that a blog can be deleted', async () => {
+        const blogs = await helper.blogsInDb()
+        const blogToDelete = blogs[0]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+        
+        // continue to verify with assert statements
+        const blogsUpdate = await helper.blogsInDb()
+        const authors = blogsUpdate.map(r => r.author)
+
+        assert(!authors.includes(blogToDelete.author))
+        assert.strictEqual(blogsUpdate.length, helper.initialBlogs.length - 1)
+    })
+
+    test('verify that a blog can be updated', async () => {
+        const blogs = await helper.blogsInDb()
+        const firstBlog = blogs[0]
+        const blogToUpdate = {
+            ...firstBlog,
+            author: "PUT test"
+        }
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(blogToUpdate)
+            .expect(200)
+        
+        const blogsUpdate = await helper.blogsInDb()
+        const authors = blogsUpdate.map(r => r.author)
+        console.log("TEST: ", authors)
+        assert(authors.includes("PUT test"))
     })
 }) 
 
