@@ -2,6 +2,7 @@ const notesRouter = require('express').Router() //create a new router object
 const Note = require('../models/note')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const ObjectId = require('mongoose').Types.ObjectId;
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note
@@ -13,7 +14,11 @@ notesRouter.get('/', async (request, response) => {
 notesRouter.get('/:id', async (request, response) => {
 
   const note = await Note.findById(request.params.id)
-  if(note){
+  
+  if (ObjectId.isValid(response.id)){
+    response.status(400).end()
+  }
+  else if(note){
     response.json(note);
   }
   else {
@@ -33,31 +38,40 @@ const getTokenFrom = request => {
 notesRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-  if( !decodedToken.id ){
-    return response.status(401).json({ error: 'token invalid' })
-  }
+  // comment this out for now section 4 part b 
+  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  // if( !decodedToken.id ){
+  //   return response.status(401).json({ error: 'token invalid' })
+  // }
 
-  const user = await User.findById(decodedToken.id)
+  // const user = await User.findById(decodedToken.id)
+
+  // const note = new Note({
+  //   content: body.content,
+  //   important: body.important === undefined ? false : body.important,
+  //   user: user.id
+  // })
+
+
+  // const savedNote = await note.save()
+  // user.notes = user.notes.concat(savedNote._id)
+  // await user.save()
+
+  // response.json(savedNote)
+  // response.status(201).end()
 
   const note = new Note({
     content: body.content,
-    important: body.important === undefined ? false : body.important,
-    user: user.id
+    important: body.important || false,
   })
 
-
   const savedNote = await note.save()
-  user.notes = user.notes.concat(savedNote._id)
-  await user.save()
-
-  response.json(savedNote)
-  response.status(201).end()
+  response.status(201).json(savedNote)
 })
 
 notesRouter.delete('/:id', async (request, response) => {
   
-  await Note.findByIdAndRemove(request.params.id)
+  await Note.findOneAndRemove(request.params.id)
   response.status(204).end()
 
   //the express-async-errors allows you to eliminate the try-catch blocks

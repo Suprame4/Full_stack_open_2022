@@ -8,15 +8,16 @@ const Note = require('../models/note')
 
 const api = supertest(app)
 
-beforeEach(async () => {
-    await Note.deleteMany({})
-
-    for( let note of helper.initialNotes){
-        let noteObject = new Note(note)
-        await noteObject.save()
-    }
-})
 describe('tesing the API', () => { 
+    beforeEach(async () => {
+        await Note.deleteMany({})
+    
+        for( let note of helper.initialNotes){
+            let noteObject = new Note(note)
+            await noteObject.save()
+        }
+    })
+
     test('notes are return as json', async () => {
         await api
             .get('/api/notes')
@@ -73,33 +74,55 @@ describe('tesing the API', () => {
         assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
     })
 
-    test('a specific note can be viewed', async () => {
-        const notesAtStart = await helper.notesInDb()
+    describe('viewing a specific note', () => {
+        test('a specific note can be viewed', async () => {
+            const notesAtStart = await helper.notesInDb()
 
-        const noteToView = notesAtStart[0]
+            const noteToView = notesAtStart[0]
 
-        const resultNote = await api    
-            .get(`/api/notes/${noteToView.id}`)
-            .expect(200)
-            .expect('Content-Type', /application\/json/)
+            const resultNote = await api    
+                .get(`/api/notes/${noteToView.id}`)
+                .expect(200)
+                .expect('Content-Type', /application\/json/)
 
-        assert.deepStrictEqual(resultNote.body, noteToView)
+            assert.deepStrictEqual(resultNote.body, noteToView)
+        })
+
+        test('fails with statuscode 404 if note does not exist', async () => {
+            const validNonexistingId = await helper.nonExistingId()
+
+            await api
+                .get(`/api/notes/${validNonexistingId}`)
+                .expect(404)
+        })
+
+        test('fails with statuscode 400 id is invalid', async () => {
+            // made the id into 20 characters
+            const invalidId = '66415a093e6b445f692762'
+
+            await api
+                .get(`/api/notes/${invalidId}`)
+                .expect(400)
+        })
+
     })
     
-    test('a note can be deleted', async () => {
-        const notesAtStart = await helper.notesInDb()
-        const noteToDelete = notesAtStart[0]
+    describe('deletion of a note', () => {
+        test('a note can be deleted', async () => {
+            const notesAtStart = await helper.notesInDb()
+            const noteToDelete = notesAtStart[0]
 
-        await api   
-            .delete(`/api/notes/${noteToDelete.id}`)
-            .expect(204)
-        
-        const notesAtEnd = await helper.notesInDb()
-        const contents = notesAtEnd.map(r => r.content)
+            await api   
+                .delete(`/api/notes/${noteToDelete.id}`)
+                .expect(204)
+            
+            const notesAtEnd = await helper.notesInDb()
+            const contents = notesAtEnd.map(r => r.content)
 
-        assert(!contents.includes(noteToDelete.content))
+            assert(!contents.includes(noteToDelete.content))
 
-        assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1)
+            assert.strictEqual(notesAtEnd.length, helper.initialNotes.length - 1)
+        })
     })
 })
 
