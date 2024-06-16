@@ -38,35 +38,26 @@ const getTokenFrom = request => {
 notesRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  // comment this out for now section 4 part b 
-  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-  // if( !decodedToken.id ){
-  //   return response.status(401).json({ error: 'token invalid' })
-  // }
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if( !decodedToken.id ){
+    return response.status(401).json({ error: 'token invalid' })
+  }
 
-  // const user = await User.findById(decodedToken.id)
-
-  // const note = new Note({
-  //   content: body.content,
-  //   important: body.important === undefined ? false : body.important,
-  //   user: user.id
-  // })
-
-
-  // const savedNote = await note.save()
-  // user.notes = user.notes.concat(savedNote._id)
-  // await user.save()
-
-  // response.json(savedNote)
-  // response.status(201).end()
+  const user = await User.findById(decodedToken.id)
 
   const note = new Note({
     content: body.content,
-    important: body.important || false,
+    important: body.important === undefined ? false : body.important,
+    user: user.id
   })
 
+
   const savedNote = await note.save()
-  response.status(201).json(savedNote)
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
+  response.json(savedNote)
+  response.status(201).end()
 })
 
 notesRouter.delete('/:id', async (request, response) => {
